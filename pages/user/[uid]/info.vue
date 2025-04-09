@@ -34,10 +34,10 @@ const {
 
 
 const route = useRoute();
-const user = ref<{id:string,username:string,email:string}|null>(null);
+const user = ref<{id:number,username:string,email:string}|null>(null);
 
 onMounted(async () => {
-  const result = await getUserById(route.params.uid as string)
+  const result = await getUserById(Number(route.params.uid))
   if (result) user.value = result;
 });
 </script>

@@ -70,7 +70,7 @@ useSeoMeta({
 
 const isLoading = ref(false);
 
-const removeUser = async (id: string) => {
+const removeUser = async (id: number) => {
   if (confirm("Вы действительно хотите удалить этого пользователя?")) {
     await deleteUser(id);
   }

@@ -11,14 +11,14 @@ const api = axios.create({
 export const getUsersRequest = () => api.get("/users");
 
 // Получить пользователя по ID
-export const getUserByIdRequest = (id: string) => api.get(`/users/${id}`);
+export const getUserByIdRequest = (id: number) => api.get(`/users/${id}`);
 
 // Создать нового пользователя
 export const createUserRequest = (data: {username:string, email:string, password: string})=> api.post("/users", data);
 
 // Обновить данные пользователя
-export const updateUserRequest = (id: string, data:  {username:string, email:string}) =>
+export const updateUserRequest = (id: number, data:  {username:string, email:string}) =>
   api.put(`/users/${id}`, data);
 
 // Удалить пользователя
-export const deleteUserRequest = (id: string) => api.delete(`/users/${id}`);
+export const deleteUserRequest = (id: number) => api.delete(`/users/${id}`);

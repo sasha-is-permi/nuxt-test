@@ -17,7 +17,7 @@ export const useUser = () => {
         try {
            const result = await createUserRequest({username:query.username, email:query.email, password: query.password});
            const data = result.data as {
-            id:string,
+            id:number,
             username:string,
             email:string,
             password:string,
@@ -26,7 +26,7 @@ export const useUser = () => {
           // Покольку на наш backend   https://jsonplaceholder.typicode.com информация не добавляется-
           // вручную добавляем id
           // в реальной системе эта строка не нужна
-          data.id = String(Number(users.value?.length ?? 0) + 1);
+          data.id = Number(users.value?.length ?? 0) + 1;
 
 
           setUsers([...users.value,data])
@@ -37,7 +37,7 @@ export const useUser = () => {
       }
 
 
-      const getUserById= async (id:string) => {
+      const getUserById= async (id:number) => {
         try {
 
           //Это для системы где back только для чтения
@@ -55,7 +55,7 @@ export const useUser = () => {
         }
         }
 
-        const updateUser= async (id:string, query: {
+        const updateUser= async (id:number, query: {
           username: string,
           email:string,
         }) => {
@@ -65,11 +65,10 @@ export const useUser = () => {
             //Это для системы где back только для чтения
             if (users.value) {
               const arr = users.value.map(item => {
-                if (item.id == id ) {
+                if (item.id === id ) {
                   const elem  = {...item}
                   elem.username=query.username
                   elem.email=query.email
-                  console.log(elem)
                   return elem;
                 } else return item
              } );
@@ -84,12 +83,12 @@ export const useUser = () => {
           }
 
 
-          const deleteUser= async (id:string) => {
+          const deleteUser= async (id:number) => {
             try {
               const result = await deleteUserRequest(id);
               if (result && users.value) {
                 users.value = users.value.filter(
-                  (user: { id: string; username: string; email: string }) =>
+                  (user: { id: number; username: string; email: string }) =>
                     user.id !== id
                 );
               }

@@ -58,7 +58,7 @@ const username = ref("");
 const email = ref("");
 
 onMounted(async () => {
-  const result = await getUserById(route.params.uid as string)
+  const result = await getUserById(Number(route.params.uid))
   if (result) { 
    // console.log(result)
     username.value = result.username;
@@ -83,7 +83,7 @@ const handleEditUser = async () => {
      return;
    }
 
-  const result = await updateUser(route.params.uid as string, {
+  const result = await updateUser(Number(route.params.uid), {
       username: username.value,
       email: email.value,
     })
