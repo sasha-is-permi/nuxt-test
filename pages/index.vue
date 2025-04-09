@@ -1,9 +1,8 @@
-
-
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Список пользователей</h1>
     <div v-if="isLoading">Загрузка...</div>
+    <div v-else></div>
+    <h1 class="text-2xl font-bold mb-4 text-center">Список пользователей</h1>
     <table class="table-auto w-full border-collapse border border-gray-300">
       <thead>
         <tr>
@@ -42,10 +41,12 @@
   </div>
 </template>
 
-
-<script setup>
-
+<script setup lang="ts">
 import { urlPage } from "~/composable/urlPage";
+
+import { useUser } from "~/composable/useUser";
+
+const { deleteUser, fetchUsers } = useUser();
 
 const url = await urlPage();
 
@@ -58,35 +59,25 @@ useSeoMeta({
   ogUrl: `${url}`,
 });
 
-import { ref, onMounted } from "vue";
-import { getUsers, deleteUser } from "~/utils/api";
-
-const users = ref([]);
+const users = ref<{ id: string; username: string; email: string }[] | null>(
+  null
+);
 const isLoading = ref(false);
 
-const fetchUsers = async () => {
-  isLoading.value = true;
-  try {
-    const response = await getUsers();
-    users.value = response.data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const removeUser = async (id) => {
+const removeUser = async (id: string) => {
   if (confirm("Вы действительно хотите удалить этого пользователя?")) {
-    try {
-      await deleteUser(id);
-      users.value = users.value.filter((user) => user.id !== id);
-    } catch (error) {
-      console.error(error);
+    const result = await deleteUser(id);
+    if (result && users.value) {
+      users.value = users.value.filter(
+        (user: { id: string; username: string; email: string }) =>
+          user.id !== id
+      );
     }
   }
 };
 
-onMounted(fetchUsers);
+onMounted(async () => {
+  const results = await fetchUsers();
+  if (results) users.value = results;
+});
 </script>
-

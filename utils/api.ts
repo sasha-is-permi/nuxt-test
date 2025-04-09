@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// (на данном теестовом сервере ничего  создать нельзя-  он только для чтения
+// (на данном тестовом сервере ничего  создать нельзя-  он только для чтения
 //  Но post-запрос идет как положено.
 
 const api = axios.create({
@@ -8,17 +8,17 @@ const api = axios.create({
 });
 
 // Получить список пользователей
-export const getUsers = () => api.get("/users");
+export const getUsersRequest = () => api.get("/users");
 
 // Получить пользователя по ID
-export const getUserById = (id: number) => api.get(`/users/${id}`);
+export const getUserByIdRequest = (id: string) => api.get(`/users/${id}`);
 
 // Создать нового пользователя
-export const createUser = (data: any) => api.post("/users", data);
+export const createUserRequest = (data: {username:string, email:string, password: string})=> api.post("/users", data);
 
 // Обновить данные пользователя
-export const updateUser = (id: number, data: any) =>
+export const updateUserRequest = (id: string, data:  {username:string, email:string}) =>
   api.put(`/users/${id}`, data);
 
 // Удалить пользователя
-export const deleteUser = (id: number) => api.delete(`/users/${id}`);
+export const deleteUserRequest = (id: string) => api.delete(`/users/${id}`);

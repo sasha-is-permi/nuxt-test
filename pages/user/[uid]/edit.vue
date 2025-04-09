@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { urlPage } from "~/composable/urlPage";
 
 const url = await urlPage();
@@ -43,9 +43,13 @@ useSeoMeta({
   ogUrl: `${url}`,
 });
 
-import { ref, onMounted } from "vue";
-import { getUserById, updateUser } from "~/utils/api";
-import { useRoute, useRouter } from "vue-router";
+import {useUser} from "~/composable/useUser";
+
+const {
+       getUserById, updateUser,
+    } = useUser()
+
+
 
 const route = useRoute();
 const router = useRouter();
@@ -54,12 +58,11 @@ const username = ref("");
 const email = ref("");
 
 onMounted(async () => {
-  try {
-    const response = await getUserById(route.params.uid);
-    username.value = response.data.username;
-    email.value = response.data.email;
-  } catch (error) {
-    console.error(error);
+  const result = await getUserById(route.params.uid as string)
+  if (result) { 
+   // console.log(result)
+    username.value = result.username;
+    email.value =  result.email;
   }
 });
 
@@ -80,16 +83,14 @@ const handleEditUser = async () => {
      return;
    }
 
-
-  try {
-    await updateUser(route.params.uid, {
+  const result = await updateUser(route.params.uid as string, {
       username: username.value,
       email: email.value,
-    });
+    })
+  if (result) { 
     alert("Пользователь успешно обновлен!");
     router.push("/");
-  } catch (error) {
-    console.error(error);
   }
+
 };
 </script>

@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { urlPage } from "~/composable/urlPage";
 import {validateEmail, validateName, validatePassword} from '~/utils/validate';
 
@@ -54,11 +54,14 @@ useSeoMeta({
   ogUrl: `${url}`,
 });
 
-import { ref } from "vue";
-import { createUser } from "~/utils/api";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
+import {useUser} from "~/composable/useUser";
+
+const {
+       createUser,
+    } = useUser()
+
+
 const username = ref("");
 const email = ref("");
 const password = ref("");
@@ -80,16 +83,8 @@ const handleCreateUser = async () => {
      return;
    }
 
-  try {
-    await createUser({
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    });
-    alert("Пользователь успешно создан!");
-    router.push("/");
-  } catch (error) {
-    console.error(error);
-  }
+   const query = {username:username.value, email: email.value, password: password.value }
+   
+   await createUser(query)
 };
 </script>

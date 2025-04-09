@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { urlPage } from "~/composable/urlPage";
 
 const url = await urlPage();
@@ -24,19 +24,20 @@ useSeoMeta({
   ogUrl: `${url}`,
 });
 
-import { ref, onMounted } from "vue";
-import { getUserById } from "~/utils/api";
-import { useRoute } from "vue-router";
+
+import {useUser} from "~/composable/useUser";
+
+const {
+       getUserById,
+    } = useUser()
+
+
 
 const route = useRoute();
-const user = ref(null);
+const user = ref<{id:string,username:string,email:string}|null>(null);
 
 onMounted(async () => {
-  try {
-    const response = await getUserById(route.params.uid);
-    user.value = response.data;
-  } catch (error) {
-    console.error(error);
-  }
+  const result = await getUserById(route.params.uid as string)
+  if (result) user.value = result;
 });
 </script>
