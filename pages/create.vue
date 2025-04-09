@@ -84,7 +84,12 @@ const handleCreateUser = async () => {
    }
 
    const query = {username:username.value, email: email.value, password: password.value }
+   const router = useRouter();
    
-   await createUser(query)
+  const result = await createUser(query)
+  if (result) {
+    alert("Пользователь успешно создан!");
+    router.push("/");
+  }
 };
 </script>

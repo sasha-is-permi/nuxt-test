@@ -2,12 +2,12 @@
 
 import { getUsersRequest, getUserByIdRequest, createUserRequest, updateUserRequest,
      deleteUserRequest } from "~/utils/api";
+     import {useUserStore} from "~/store/useUserStore";     
 
 export const useUser = () => {
 
-  const router = useRouter();
-
-    const users = ref([]);
+   const {setUsers} = useUserStore();
+   const {users} = storeToRefs(useUserStore());
     
     const createUser= async (query:{
       username:string,
@@ -15,19 +15,41 @@ export const useUser = () => {
       password:string,
     }) => {
         try {
-            await createUserRequest({username:query.username, email:query.email, password: query.password});
-            alert("Пользователь успешно создан!");
-            router.push("/");
+           const result = await createUserRequest({username:query.username, email:query.email, password: query.password});
+           const data = result.data as {
+            id:string,
+            username:string,
+            email:string,
+            password:string,
+          }
+
+          // Покольку на наш backend   https://jsonplaceholder.typicode.com информация не добавляется-
+          // вручную добавляем id
+          // в реальной системе эта строка не нужна
+          data.id = String(Number(users.value?.length ?? 0) + 1);
+
+
+          setUsers([...users.value,data])
+           return true;
           } catch (error) {
-            console.error(error);
+           return null;
           }
       }
 
 
       const getUserById= async (id:string) => {
         try {
-          const response = await getUserByIdRequest(id);
-          return response.data;
+
+          //Это для системы где back только для чтения
+          //Мы можем добавить в store элементы, которые нет на back
+          // Поэтому запрашиваем из store
+          let result; 
+          if (users.value)  result = users.value.find(item => item.id == id)
+          return result;   
+          
+          //Это для реальной системы
+          // const response = await getUserByIdRequest(id);
+          //  return response.data;
         } catch (error) {
           return null;
         }
@@ -38,7 +60,23 @@ export const useUser = () => {
           email:string,
         }) => {
           try {
-            await updateUserRequest(id, query);
+            //Это для рельной  системы
+            //await updateUserRequest(id, query);
+            //Это для системы где back только для чтения
+            if (users.value) {
+              const arr = users.value.map(item => {
+                if (item.id == id ) {
+                  const elem  = {...item}
+                  elem.username=query.username
+                  elem.email=query.email
+                  console.log(elem)
+                  return elem;
+                } else return item
+             } );
+             setUsers([...arr]) 
+            }
+
+           
             return true;
           } catch (error) {
              return false;
@@ -48,20 +86,33 @@ export const useUser = () => {
 
           const deleteUser= async (id:string) => {
             try {
-              await deleteUserRequest(id);
-              return true;
+              const result = await deleteUserRequest(id);
+              if (result && users.value) {
+                users.value = users.value.filter(
+                  (user: { id: string; username: string; email: string }) =>
+                    user.id !== id
+                );
+              }
             } catch (error) {
-             return false;
+             console.log(error)
             }
             }    
 
             const fetchUsers = async () => {
+              // Если уже запросили и данные есть - 2 раз не запрашиваем
+              // В реальной системе эта строка не нужна- мы запрашиваем
+              // все равно поскольку данные могут поменяться.
+              // А тут - можно, поскольку наш backend https://jsonplaceholder.typicode.com 
+              // только для чтения- 
+              // хоть изменения идут, но back не меняется
+              // работаем со store фактически   
+              if (users.value &&  users.value.length  > 0) return;
+
               try {
                 const response = await getUsersRequest();
-                return response?.data
-            //    users.value = response.data;
+                setUsers(response?.data)
               } catch (error) {
-               return null;
+                console.log(error)
               } 
             };
             

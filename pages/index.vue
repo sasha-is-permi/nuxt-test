@@ -42,6 +42,14 @@
 </template>
 
 <script setup lang="ts">
+
+onMounted(async () => {
+   await fetchUsers();
+});
+
+import {useUserStore} from "~/store/useUserStore";
+const {users} = storeToRefs(useUserStore());
+
 import { urlPage } from "~/composable/urlPage";
 
 import { useUser } from "~/composable/useUser";
@@ -59,25 +67,14 @@ useSeoMeta({
   ogUrl: `${url}`,
 });
 
-const users = ref<{ id: string; username: string; email: string }[] | null>(
-  null
-);
+
 const isLoading = ref(false);
 
 const removeUser = async (id: string) => {
   if (confirm("Вы действительно хотите удалить этого пользователя?")) {
-    const result = await deleteUser(id);
-    if (result && users.value) {
-      users.value = users.value.filter(
-        (user: { id: string; username: string; email: string }) =>
-          user.id !== id
-      );
-    }
+    await deleteUser(id);
   }
 };
 
-onMounted(async () => {
-  const results = await fetchUsers();
-  if (results) users.value = results;
-});
+
 </script>
