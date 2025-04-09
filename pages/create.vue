@@ -1,28 +1,3 @@
-<script setup>
-import { ref } from "vue";
-import { createUser } from "~/utils/api";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-const username = ref("");
-const email = ref("");
-const password = ref("");
-
-const submitForm = async () => {
-  try {
-    await createUser({
-      username: username.value,
-      email: email.value,
-      password: password.value,
-    });
-    alert("Пользователь успешно создан!");
-    router.push("/");
-  } catch (error) {
-    console.error(error);
-  }
-};
-</script>
-
 <template>
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Создать пользователя</h1>
@@ -63,3 +38,41 @@ const submitForm = async () => {
     </form>
   </div>
 </template>
+
+<script setup>
+import { urlPage } from "~/composable/urlPage";
+
+const url = await urlPage();
+
+useSeoMeta({
+  title: `Создание пользователя в тестовом приложении`,
+  ogTitle: `Создание пользователя в тестовом приложении`,
+  description: `Создание пользователя в тестовом приложении`,
+  ogDescription: `Создание пользователя в тестовом приложении`,
+  keywords: ` `,
+  ogUrl: `${url}`,
+});
+
+import { ref } from "vue";
+import { createUser } from "~/utils/api";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const username = ref("");
+const email = ref("");
+const password = ref("");
+
+const submitForm = async () => {
+  try {
+    await createUser({
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    });
+    alert("Пользователь успешно создан!");
+    router.push("/");
+  } catch (error) {
+    console.error(error);
+  }
+};
+</script>
