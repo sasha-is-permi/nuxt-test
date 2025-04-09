@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Создать пользователя</h1>
-    <form @submit.prevent="submitForm" class="space-y-4">
+    <form class="space-y-4">
       <div>
         <label for="username" class="block font-medium">Логин:</label>
         <input
@@ -32,9 +32,9 @@
           class="border border-gray-300 rounded px-4 py-2 w-full"
         />
       </div>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-        Создать
-      </button>
+      <UiButton  @click.prevent="handleCreateUser">
+        Создать 
+      </UiButton>
     </form>
   </div>
 </template>
@@ -62,7 +62,7 @@ const username = ref("");
 const email = ref("");
 const password = ref("");
 
-const submitForm = async () => {
+const handleCreateUser = async () => {
   try {
     await createUser({
       username: username.value,
