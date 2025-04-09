@@ -5,7 +5,7 @@
       <div>
         <label for="username" class="block font-medium">Логин:</label>
         <input
-          v-model="username"
+          v-model.trim="username"
           id="username"
           type="text"
           required
@@ -15,7 +15,7 @@
       <div>
         <label for="email" class="block font-medium">Почта:</label>
         <input
-          v-model="email"
+          v-model.trim="email"
           id="email"
           type="email"
           required
@@ -41,6 +41,7 @@
 
 <script setup>
 import { urlPage } from "~/composable/urlPage";
+import {validateEmail, validateName, validatePassword} from '~/utils/validate';
 
 const url = await urlPage();
 
@@ -63,6 +64,22 @@ const email = ref("");
 const password = ref("");
 
 const handleCreateUser = async () => {
+
+  const isValidName = validateName(unref(username).trim());
+  const isValidMail = validateEmail(unref(email).trim());
+  const isValidPassword = validatePassword(unref(password).trim());
+
+  let err=""
+
+  if (!isValidName) err+='username должен содержать не менее 1 символа. ';  
+  if (!isValidMail) err+='Введите корректный Email. ';
+  if (!isValidPassword) err+='Пароль должен содержать не менее 1 символа. ';
+
+  if (err.length > 0) {
+     alert(err);
+     return;
+   }
+
   try {
     await createUser({
       username: username.value,
