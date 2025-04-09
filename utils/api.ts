@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// (на данном теестовом сервере ничего  создать нельзя-  он только для чтения
+//  Но post-запрос идет как положено.
+
 const api = axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com',
+  baseURL: 'https://jsonplaceholder.typicode.com',  // https://test.luna.wigm.ru/api/
 });
 
 // Получить список пользователей

@@ -18,7 +18,7 @@
           <td class="border border-gray-300 px-4 py-2">{{ user.username }}</td>
           <td class="border border-gray-300 px-4 py-2">
             <NuxtLink
-              :to="`/user/${user.id}`"
+              :to="`/user/${user.id}/info`"
               class="text-blue-500 underline mr-2"
               >Инфо</NuxtLink
             >
